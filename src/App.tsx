@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { sounds } from './utils/audio';
-import { Play, Volume2, VolumeX, RotateCcw, MessageCircle } from 'lucide-react';
+import { Play, Volume2, VolumeX, RotateCcw, MessageCircle, X } from 'lucide-react';
 
 interface WheelSegment {
   id: number;
@@ -23,6 +23,20 @@ export default function App() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [currentRotation, setCurrentRotation] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  
+  // Compliance & Legal State
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [cookieAccepted, setCookieAccepted] = useState(true);
+
+  useEffect(() => {
+    setCookieAccepted(localStorage.getItem('cookieConsent') === 'true');
+  }, []);
+
+  const acceptCookies = () => {
+    localStorage.setItem('cookieConsent', 'true');
+    setCookieAccepted(true);
+  };
   
   // Active spinning outcome display
   const [resultSegment, setResultSegment] = useState<WheelSegment | null>(null);
@@ -311,10 +325,100 @@ export default function App() {
         
       </main>
 
-      {/* SIMPLE FOOTER */}
-      <footer className="border-t border-slate-900 py-3 shrink-0 text-center text-[9px] text-slate-600 font-mono tracking-widest uppercase">
-        © 2026 LUCKY SPIN • ALL OUTCOMES ARE FULLY RANDOM
+      {/* SEO & CONTENT SECTION FOR ADSENSE */}
+      <section className="max-w-2xl mx-auto mt-16 mb-8 p-6 sm:p-8 bg-slate-900/30 rounded-2xl border border-slate-800/50 text-slate-300 text-sm space-y-6">
+        <div>
+          <h2 className="text-xl font-display font-bold text-white mb-2">About Lucky Spin</h2>
+          <p className="leading-relaxed text-slate-400">
+            Lucky Spin is a free, interactive random picker wheel designed to help you make decisions, host giveaways, or add a fun element to your events. Whether you are a teacher randomly calling on students, a business owner picking a raffle winner, or just trying to decide where to eat dinner, our customizable wheel makes the process fair and entertaining.
+          </p>
+        </div>
+        
+        <div>
+          <h3 className="text-lg font-display font-bold text-white mb-2">How to Use the Custom Wheel</h3>
+          <p className="leading-relaxed text-slate-400 mb-2">
+            You can easily create your own custom wheel by modifying the web address (URL). This is perfect for store owners wanting to share a specific promotional wheel with their customers.
+          </p>
+          <ul className="list-disc pl-5 space-y-1 text-slate-400">
+            <li>Add <code className="bg-slate-950 px-1 py-0.5 rounded text-emerald-400 border border-slate-800 text-xs">?items=</code> to the end of our website URL.</li>
+            <li>Separate your custom prizes or options with commas.</li>
+            <li>Example: <code className="bg-slate-950 px-1 py-0.5 rounded text-amber-400 border border-slate-800 text-xs break-all">mysite.com/?items=10% Off,Sorry,Free Coffee</code></li>
+          </ul>
+        </div>
+      </section>
+
+      {/* FOOTER WITH LEGAL LINKS */}
+      <footer className="border-t border-slate-900 py-6 shrink-0 flex flex-col items-center gap-3">
+        <div className="flex gap-6 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+          <button onClick={() => setShowPrivacy(true)} className="hover:text-slate-300 transition-colors">Privacy Policy</button>
+          <button onClick={() => setShowTerms(true)} className="hover:text-slate-300 transition-colors">Terms of Service</button>
+          <a href="mailto:contact@yoursite.com" className="hover:text-slate-300 transition-colors">Contact</a>
+        </div>
+        <p className="text-[9px] text-slate-600 font-mono tracking-widest uppercase">
+          © {new Date().getFullYear()} LUCKY SPIN • ALL OUTCOMES ARE FULLY RANDOM
+        </p>
       </footer>
+
+      {/* PRIVACY POLICY MODAL */}
+      {showPrivacy && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl relative">
+            <button onClick={() => setShowPrivacy(false)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-slate-800 rounded-full">
+              <X className="w-4 h-4" />
+            </button>
+            <h2 className="text-2xl font-display font-bold text-white mb-4">Privacy Policy</h2>
+            <div className="space-y-4 text-sm text-slate-300">
+              <p>Last updated: {new Date().toLocaleDateString()}</p>
+              <p>At Lucky Spin, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Lucky Spin and how we use it.</p>
+              <h3 className="text-lg font-bold text-white mt-4">Log Files</h3>
+              <p>Lucky Spin follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks.</p>
+              <h3 className="text-lg font-bold text-white mt-4">Cookies and Web Beacons</h3>
+              <p>Like any other website, Lucky Spin uses "cookies". These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.</p>
+              <h3 className="text-lg font-bold text-white mt-4">Google DoubleClick DART Cookie</h3>
+              <p>Google is one of a third-party vendor on our site. It also uses cookies, known as DART cookies, to serve ads to our site visitors based upon their visit to our site and other sites on the internet. However, visitors may choose to decline the use of DART cookies by visiting the Google ad and content network Privacy Policy at the following URL – <a href="https://policies.google.com/technologies/ads" className="text-emerald-400 hover:underline" target="_blank" rel="noreferrer">https://policies.google.com/technologies/ads</a></p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TERMS OF SERVICE MODAL */}
+      {showTerms && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl relative">
+            <button onClick={() => setShowTerms(false)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-slate-800 rounded-full">
+              <X className="w-4 h-4" />
+            </button>
+            <h2 className="text-2xl font-display font-bold text-white mb-4">Terms of Service</h2>
+            <div className="space-y-4 text-sm text-slate-300">
+              <p>Last updated: {new Date().toLocaleDateString()}</p>
+              <p>By accessing this Website, you are agreeing to be bound by these Website Terms and Conditions of Use and agree that you are responsible for the agreement with any applicable local laws.</p>
+              <h3 className="text-lg font-bold text-white mt-4">Use License</h3>
+              <p>Permission is granted to temporarily download one copy of the materials on Lucky Spin's Website for personal, non-commercial transitory viewing only.</p>
+              <h3 className="text-lg font-bold text-white mt-4">Disclaimer</h3>
+              <p>All the materials on Lucky Spin's Website are provided "as is". Lucky Spin makes no warranties, may it be expressed or implied, therefore negates all other warranties. Furthermore, Lucky Spin does not make any representations concerning the accuracy or reliability of the use of the materials on its Website or otherwise relating to such materials or any sites linked to this Website.</p>
+              <h3 className="text-lg font-bold text-white mt-4">Limitations</h3>
+              <p>Lucky Spin or its suppliers will not be hold accountable for any damages that will arise with the use or inability to use the materials on Lucky Spin's Website, even if Lucky Spin or an authorize representative of this Website has been notified, orally or written, of the possibility of such damage.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* COOKIE CONSENT BANNER */}
+      {!cookieAccepted && (
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 p-4 z-[60] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+          <div className="text-xs text-slate-300 text-center sm:text-left max-w-4xl">
+            We use cookies to personalize content and ads, to provide social media features and to analyze our traffic. We also share information about your use of our site with our social media, advertising and analytics partners.
+          </div>
+          <div className="flex gap-3 shrink-0">
+            <button onClick={() => setShowPrivacy(true)} className="px-4 py-2 text-slate-300 hover:text-white text-xs font-bold transition-colors">
+              Learn More
+            </button>
+            <button onClick={acceptCookies} className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-lg transition-colors">
+              ACCEPT
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
