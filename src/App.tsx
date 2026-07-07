@@ -6,19 +6,20 @@ interface WheelSegment {
   id: number;
   label: string;
   type: 'win' | 'lose';
+  color?: string;
 }
 
 const DEFAULT_SEGMENTS: WheelSegment[] = [
-  { id: 1, label: 'WIN', type: 'win' },
-  { id: 2, label: 'LOSE', type: 'lose' },
-  { id: 3, label: 'WIN', type: 'win' },
-  { id: 4, label: 'LOSE', type: 'lose' },
-  { id: 5, label: 'WIN', type: 'win' },
-  { id: 6, label: 'LOSE', type: 'lose' },
+  { id: 1, label: 'WIN', type: 'win', color: '#10B981' },
+  { id: 2, label: 'LOSE', type: 'lose', color: '#EF4444' },
+  { id: 3, label: 'WIN', type: 'win', color: '#10B981' },
+  { id: 4, label: 'LOSE', type: 'lose', color: '#EF4444' },
+  { id: 5, label: 'WIN', type: 'win', color: '#10B981' },
+  { id: 6, label: 'LOSE', type: 'lose', color: '#EF4444' },
 ];
 
 export default function App() {
-  const [segments] = useState<WheelSegment[]>(DEFAULT_SEGMENTS);
+  const [segments, setSegments] = useState<WheelSegment[]>(DEFAULT_SEGMENTS);
   const [isSpinning, setIsSpinning] = useState(false);
   const [currentRotation, setCurrentRotation] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
@@ -42,20 +43,16 @@ export default function App() {
     setResultSegment(null);
     setHasSpun(true);
 
-    // 1. Determine target segment index randomly (1/6 chance for each slice)
-    const targetIndex = Math.floor(Math.random() * 6);
+    const numSegments = segments.length;
+    const anglePerSegment = 360 / numSegments;
+    const targetIndex = Math.floor(Math.random() * numSegments);
     const winningSegment = segments[targetIndex];
 
-    // 2. Compute rotation trigonometry
-    // Pointer is at the top (270 degrees).
-    // Midpoint angle of target index: (targetIndex * 60) + 30
-    const midAngle = (targetIndex * 60) + 30;
-    
-    // Angle to bring target segment's center to top (270)
+    const midAngle = (targetIndex * anglePerSegment) + (anglePerSegment / 2);
     const baseAngle = (270 - midAngle + 360) % 360;
     
     // Multi-rotations for suspense + random offset within the segment
-    const randomOffset = Math.floor(Math.random() * 30) - 15; // +/- 15 degrees from center
+    const randomOffset = Math.floor(Math.random() * (anglePerSegment * 0.6)) - (anglePerSegment * 0.3);
     const totalSpins = 6 + Math.floor(Math.random() * 2); // 6 to 7 full spins
     const finalRotation = (totalSpins * 360) + ((baseAngle + randomOffset + 360) % 360);
 
@@ -79,12 +76,15 @@ export default function App() {
       setCurrentRotation(computedRot);
 
       // Play ticking audio as pointer passes lines
-      const pointerOffsetRotation = (computedRot + 30) % 360;
-      const tickIndex = Math.floor(pointerOffsetRotation / 60) % 6;
-      if (tickIndex !== lastTickIndexRef.current) {
+      // Calculate which segment boundary is passing the top (270 degrees)
+      const normalizedRot = (computedRot) % 360;
+      const topAngleOffset = (270 - normalizedRot + 360) % 360;
+      const tickIndex = Math.floor(topAngleOffset / anglePerSegment);
+      
+      if (tickIndex !== lastTickIndexRef.current && lastTickIndexRef.current !== -1) {
         sounds.playTick();
-        lastTickIndexRef.current = tickIndex;
       }
+      lastTickIndexRef.current = tickIndex;
 
       if (progress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate);
@@ -106,20 +106,23 @@ export default function App() {
     animationFrameRef.current = requestAnimationFrame(animate);
   };
 
-  // Build sector path for 60 degrees (1/6 of circle)
   const getSectorPath = (index: number) => {
     const size = 300;
     const radius = size / 2;
-    const innerRadius = radius - 4; // Simplified, sits right on the edge
-    const startAngle = (index * 60 * Math.PI) / 180;
-    const endAngle = ((index + 1) * 60 * Math.PI) / 180;
+    const innerRadius = radius - 4;
+    const numSegments = segments.length;
+    const anglePerSegment = 360 / numSegments;
+    
+    const startAngle = (index * anglePerSegment * Math.PI) / 180;
+    const endAngle = ((index + 1) * anglePerSegment * Math.PI) / 180;
+    const largeArcFlag = anglePerSegment > 180 ? 1 : 0;
     
     const x1 = radius + innerRadius * Math.cos(startAngle);
     const y1 = radius + innerRadius * Math.sin(startAngle);
     const x2 = radius + innerRadius * Math.cos(endAngle);
     const y2 = radius + innerRadius * Math.sin(endAngle);
     
-    return `M ${radius} ${radius} L ${x1} ${y1} A ${innerRadius} ${innerRadius} 0 0 1 ${x2} ${y2} Z`;
+    return `M ${radius} ${radius} L ${x1} ${y1} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
   };
 
   return (
@@ -133,24 +136,26 @@ export default function App() {
             <span className="font-display font-black text-sm tracking-wider">LUCKY SPIN</span>
           </div>
 
-          {/* Sound Mute Button */}
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all flex items-center gap-1.5 text-[10px] font-bold"
-            id="audio-mute-toggle"
-          >
-            {isMuted ? (
-              <>
-                <VolumeX className="w-3.5 h-3.5 text-rose-500" />
-                <span>SOUND MUTED</span>
-              </>
-            ) : (
-              <>
-                <Volume2 className="w-3.5 h-3.5 text-emerald-500" />
-                <span>SOUND ON</span>
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Sound Mute Button */}
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all flex items-center gap-1.5 text-[10px] font-bold"
+              id="audio-mute-toggle"
+            >
+              {isMuted ? (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-rose-500" />
+                  <span className="hidden sm:inline">SOUND MUTED</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="hidden sm:inline">SOUND ON</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -162,9 +167,6 @@ export default function App() {
           <h2 className="font-display font-black text-xl tracking-tight text-white">
             Spin the Wheel
           </h2>
-          <p className="text-[10px] text-slate-400 mt-1">
-            Red represents <span className="text-rose-400 font-bold">LOSE</span>, green represents <span className="text-emerald-400 font-bold">WIN</span>.
-          </p>
         </div>
 
         {/* SPIN WHEEL WIDGET */}
@@ -188,19 +190,23 @@ export default function App() {
           >
             <svg width="300" height="300" viewBox="0 0 300 300" className="w-full h-full">
               {segments.map((segment, index) => {
-                const startAngleDeg = index * 60;
-                const textAngleDeg = startAngleDeg + 30;
+                const anglePerSegment = 360 / segments.length;
+                const startAngleDeg = index * anglePerSegment;
+                const textAngleDeg = startAngleDeg + (anglePerSegment / 2);
                 const textRad = (textAngleDeg * Math.PI) / 180;
-                const textDist = 150 * 0.58;
+                
+                // Adjust text distance based on segment count
+                const textDist = segments.length > 8 ? 150 * 0.7 : 150 * 0.58;
                 const tx = 150 + textDist * Math.cos(textRad);
                 const ty = 150 + textDist * Math.sin(textRad);
+                const fontSize = segments.length > 8 ? "10" : "14";
 
                 return (
                   <g key={segment.id}>
                     {/* SVG Pie Arc with flat colors */}
                     <path
                       d={getSectorPath(index)}
-                      fill={segment.type === 'win' ? '#10B981' : '#EF4444'} // Clean solid Tailwind colors
+                      fill={segment.color}
                       className="stroke-slate-950 stroke-[3] transition-all"
                     />
 
@@ -210,7 +216,7 @@ export default function App() {
                       y={ty}
                       fill="#FFFFFF"
                       fontWeight="bold"
-                      fontSize="14"
+                      fontSize={fontSize}
                       textAnchor="middle"
                       dominantBaseline="middle"
                       className="font-sans tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
@@ -276,7 +282,7 @@ export default function App() {
               id="outcome-display-pill"
             >
               <span className="text-[11px] font-bold uppercase tracking-tight">
-                {resultSegment.type === 'win' ? '🎉 WIN: ' : '❌ LOSE: '} {resultSegment.label}
+                {resultSegment.type === 'win' ? '🎉 OUTCOME: ' : '❌ OUTCOME: '} {resultSegment.label}
               </span>
             </div>
           )}
@@ -303,7 +309,6 @@ export default function App() {
           </button>
         )}
         
-
       </main>
 
       {/* SIMPLE FOOTER */}
@@ -314,3 +319,4 @@ export default function App() {
     </div>
   );
 }
+
