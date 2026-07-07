@@ -224,44 +224,38 @@ export default function App() {
             </svg>
           </div>
 
-      {/* Center WhatsApp Link Hub */}
-      <a
-        href="https://whatsapp.com/channel/0029VaHSaCLK0IBoy1Jket3A"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute z-30 w-16 h-16 rounded-full bg-[#25D366] hover:bg-[#20BA5A] border-4 border-slate-900 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(37,211,102,0.4)] transition-all hover:scale-110 cursor-pointer group"
-        title="Join our WhatsApp Channel"
+      {/* Center Spin Hub */}
+      <button
+        onClick={handleSpin}
+        disabled={isSpinning}
+        className={`absolute z-30 w-16 h-16 rounded-full border-4 border-slate-900 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all cursor-pointer group ${
+          isSpinning
+            ? 'bg-slate-800 text-slate-500 cursor-not-allowed scale-95'
+            : 'bg-emerald-500 hover:bg-emerald-400 text-white hover:scale-110 active:scale-95'
+        }`}
+        title="Spin the Wheel"
       >
-        <MessageCircle className="w-5 h-5 text-white group-hover:scale-110 transition-transform fill-current" />
-        <span className="text-[10px] font-black text-white mt-0.5 tracking-wider uppercase">Join</span>
-      </a>
+        {isSpinning ? (
+          <div className="w-5 h-5 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <span className="font-black text-[13px] tracking-wider uppercase shadow-sm">Spin</span>
+        )}
+      </button>
 
         </div>
 
-        {/* PRIMARY SPIN ACTION */}
-        <div className="mt-3 w-full shrink-0">
-          <button
-            onClick={handleSpin}
-            disabled={isSpinning}
-            className={`py-3 w-full rounded-xl font-bold text-sm uppercase tracking-wider transition-all transform shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-              isSpinning
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed scale-98'
-                : 'bg-emerald-500 hover:bg-emerald-400 text-white active:scale-98'
-            }`}
-            id="wheel-spin-action-btn"
+        {/* WHATSAPP JOIN ACTION */}
+        <div className="mt-4 w-full shrink-0" id="whatsapp-join-section">
+          <a
+            href="https://whatsapp.com/channel/0029VaHSaCLK0IBoy1Jket3A"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-3 w-full rounded-xl font-bold text-sm uppercase tracking-wider transition-all transform shadow-md flex items-center justify-center gap-2 cursor-pointer bg-[#25D366] hover:bg-[#20BA5A] text-white active:scale-98"
+            id="whatsapp-join-btn"
           >
-            {isSpinning ? (
-              <>
-                <div className="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
-                <span>SPINNING...</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4 fill-current" />
-                <span>SPIN THE WHEEL</span>
-              </>
-            )}
-          </button>
+            <MessageCircle className="w-5 h-5 fill-current" />
+            <span>Join Our WhatsApp</span>
+          </a>
         </div>
 
         {/* REAL-TIME STATUS / OUTCOME FEEDBACK */}
@@ -289,7 +283,7 @@ export default function App() {
 
           {!isSpinning && !hasSpun && (
             <div className="text-center text-[10px] text-slate-500 italic">
-              "Click the button above to start your random spin!"
+              "Click the center SPIN button to test your luck!"
             </div>
           )}
         </div>
