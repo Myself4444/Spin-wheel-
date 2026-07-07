@@ -224,10 +224,17 @@ export default function App() {
             </svg>
           </div>
 
-          {/* Center dark slate hub cap */}
-          <div className="absolute z-30 w-12 h-12 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center shadow-lg">
-            <div className="w-3 h-3 rounded-full bg-amber-400" />
-          </div>
+      {/* Center WhatsApp Link Hub */}
+      <a
+        href="https://whatsapp.com/channel/0029VaHSaCLK0IBoy1Jket3A"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute z-30 w-16 h-16 rounded-full bg-[#25D366] hover:bg-[#20BA5A] border-4 border-slate-900 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(37,211,102,0.4)] transition-all hover:scale-110 cursor-pointer group"
+        title="Join our WhatsApp Channel"
+      >
+        <MessageCircle className="w-5 h-5 text-white group-hover:scale-110 transition-transform fill-current" />
+        <span className="text-[10px] font-black text-white mt-0.5 tracking-wider uppercase">Join</span>
+      </a>
 
         </div>
 
@@ -302,22 +309,7 @@ export default function App() {
           </button>
         )}
         
-        {/* WHATSAPP JOIN ACTION */}
-        <div className="mt-2 pt-2 border-t border-slate-900 w-full flex flex-col items-center shrink-0" id="whatsapp-join-section">
-          <p className="text-[10px] text-slate-400 mb-2 text-center">
-            Join our community for exclusive spins & rewards!
-          </p>
-          <a
-            href="https://whatsapp.com/channel/0029VaHSaCLK0IBoy1Jket3A"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-2 px-4 rounded-lg font-bold text-xs text-center flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white shadow-lg shadow-emerald-950/20 hover:shadow-emerald-500/15 transition-all transform active:scale-98"
-            id="whatsapp-join-btn"
-          >
-            <MessageCircle className="w-4 h-4 fill-current" />
-            <span>Join Our WhatsApp Channel</span>
-          </a>
-        </div>
+
       </main>
 
       {/* SIMPLE FOOTER */}
