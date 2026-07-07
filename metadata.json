@@ -1,0 +1,6 @@
+{
+  "name": "Lucky Spin Wheel",
+  "description": "An interactive, beautifully animated 6-segment lucky spin wheel landing page featuring customizable red and green win/lose segments and reward claims.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
