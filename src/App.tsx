@@ -172,11 +172,6 @@ export default function App() {
         {isMenuOpen && (
           <div className="absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 shadow-xl py-4 px-6 flex flex-col gap-4">
             <button onClick={() => { setIsMenuOpen(false); setCurrentView('home'); }} className="text-left text-sm font-bold text-slate-300 hover:text-white uppercase tracking-wider">Home</button>
-            <button onClick={() => {
-              setIsMenuOpen(false);
-              setCurrentView('home');
-              setTimeout(() => document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' }), 50);
-            }} className="text-left text-sm font-bold text-slate-300 hover:text-white uppercase tracking-wider">About</button>
             <a href="https://whatsapp.com/channel/0029VaHSaCLK0IBoy1Jket3A" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-emerald-400 hover:text-emerald-300 uppercase tracking-wider flex items-center gap-2">
               <MessageCircle className="w-4 h-4" /> Join WhatsApp Group
             </a>
@@ -337,62 +332,8 @@ export default function App() {
         )}
         
       </main>
-
-      {/* SEO & CONTENT SECTION FOR ADSENSE (Substantial content required for approval) */}
-      <section id="about-section" className="max-w-4xl mx-auto mt-16 mb-8 p-6 sm:p-8 bg-slate-900/30 rounded-2xl border border-slate-800/50 text-slate-300 text-sm space-y-8">
-        <div>
-          <h2 className="text-2xl font-display font-bold text-white mb-4">About the Lucky Spin Wheel</h2>
-          <p className="leading-relaxed text-slate-400 mb-4">
-            The Lucky Spin Wheel is a free, interactive random picker tool designed to make decision-making fun, fair, and effortless. Whether you are a teacher looking to pick a student for an activity, a business owner running a promotional giveaway, or simply a group of friends trying to decide where to eat, our digital roulette wheel offers an unbiased and exciting way to get an answer. 
-          </p>
-          <p className="leading-relaxed text-slate-400">
-            Unlike manual drawing methods, our algorithm ensures a completely random outcome every single time. The engaging visual feedback and satisfying sound effects replicate the thrill of a real-life game show wheel, making every spin an event.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <h3 className="text-lg font-bold text-white mb-3">How to Use the Random Picker</h3>
-            <ul className="list-disc pl-5 space-y-2 text-slate-400">
-              <li><strong>Click the Spin Button:</strong> Simply tap the large 'SPIN' button in the center of the wheel.</li>
-              <li><strong>Wait for the Result:</strong> Watch as the wheel rotates and slows down naturally to land on a random segment.</li>
-              <li><strong>Claim the Prize:</strong> The winning segment will be highlighted and announced on your screen.</li>
-              <li><strong>Create Custom Wheels:</strong> Add <code className="bg-slate-950 px-1 py-0.5 rounded text-emerald-400 border border-slate-800 text-xs">?items=A,B,C</code> to the URL to create your own unique spin wheel for any occasion.</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-bold text-white mb-3">Popular Use Cases</h3>
-            <ul className="list-disc pl-5 space-y-2 text-slate-400">
-              <li><strong>Giveaways & Contests:</strong> Randomly select a winner from a list of loyal customers or social media followers.</li>
-              <li><strong>Classroom Management:</strong> Pick students randomly to answer questions or assign groups without bias.</li>
-              <li><strong>Event Raffles:</strong> Replace traditional paper tickets with an exciting digital draw.</li>
-              <li><strong>Daily Decisions:</strong> Can't decide what movie to watch or who does the chores? Let the wheel decide!</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="border-t border-slate-800/50 pt-8">
-          <h3 className="text-lg font-bold text-white mb-4">Frequently Asked Questions (FAQ)</h3>
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-bold text-slate-200">Is the spin result truly random?</h4>
-              <p className="text-slate-400 mt-1">Yes! The wheel uses standard cryptographic random number generation to ensure that every segment has an equal and fair chance of being selected on every spin.</p>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-200">Can I use this for my business giveaways?</h4>
-              <p className="text-slate-400 mt-1">Absolutely. The Lucky Spin wheel is perfect for engaging customers. We recommend displaying it on a tablet or screen at your physical shop to attract walk-in customers.</p>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-200">Is this tool free to use?</h4>
-              <p className="text-slate-400 mt-1">Yes, the basic spinning functionality is completely free and requires no registration or downloads to use.</p>
-            </div>
-          </div>
-        </div>
-      </section>
       </>
       )}
-
       {currentView === 'privacy' && (
         <main className="flex-1 w-full max-w-3xl mx-auto py-12 px-6 text-slate-300 space-y-6">
           <h1 className="text-3xl font-display font-bold text-white mb-8">Privacy Policy</h1>
